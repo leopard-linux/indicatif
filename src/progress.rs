@@ -974,6 +974,22 @@ impl MultiProgress {
         true
     }
 
+    pub fn clear(&self) -> io::Result<()> {
+        let mut state = self.state.write().unwrap();
+        let move_cursor = self.state.read().unwrap().move_cursor;
+
+        state.draw_target.apply_draw_state(ProgressDrawState {
+            lines: vec![],
+            orphan_lines: 0,
+            finished: true,
+            force_draw: true,
+            move_cursor,
+            ts: Instant::now(),
+        })?;
+
+        Ok(())
+    }
+
     fn join_impl(&self, clear: bool, time_limit: Option<TickTimeLimit>) -> io::Result<()> {
         let rx = match self.rx.try_lock() {
             Err(TryLockError::WouldBlock) => panic!("Update already in progress"),
