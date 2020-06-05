@@ -975,8 +975,8 @@ impl MultiProgress {
     }
 
     pub fn clear(&self) -> io::Result<()> {
-        let mut state = self.state.write().unwrap();
         let move_cursor = self.state.read().unwrap().move_cursor;
+        let mut state = self.state.write().unwrap();
 
         state.draw_target.apply_draw_state(ProgressDrawState {
             lines: vec![],
